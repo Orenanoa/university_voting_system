@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Student Voting System</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #14532d;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    form {
+      width: 320px;
+      padding: 30px;
+      background: cornsilk;
+      border-radius: 6px;
+      border-top: 6px solid #14532d;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    img {
+      width: 110px;
+      height: 110px;
+    }
+    h1 {
+      color: #14532d;
+      font-size: 24px;
+    }
+    label {
+      display: block;
+      text-align: left;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    input {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border: 1px solid #888;
+      border-radius: 4px;
+    }
+    #error {
+      color: #b00020;
+      font-weight: bold;
+      min-height: 20px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      color: white;
+      background: #14532d;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <form id="loginForm">
+    <img src="logo.png" alt="IUIU logo">
+    <h1>Sign in to vote</h1>
+
+    <label>Username
+      <input type="text" id="username">
+    </label>
+
+    <label>Password
+      <input type="password" id="password">
+    </label>
+
+    <p id="error"></p>
+    <button type="button" onclick="login()">Login</button>
+  </form>
+
+  <script src="/static/crud.js"></script>
+  <script>
+    async function login() {
+      var username = document.getElementById("username").value.trim();
+      var password = document.getElementById("password").value.trim();
+      var error = document.getElementById("error");
+
+      if (username == "" || password == "") {
+        error.innerHTML = "Enter your username and password.";
+        return;
+      }
+      try {
+        await api("/api/login/", "POST", { username: username, password: password });
+        window.location.href = "/home.html";
+      } catch (e) {
+        error.textContent = e.message;
+      }
+    }
+    document.getElementById("password").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") login();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ title }} | Student Voting System{% endblock %}
+{% block content %}
+<h1>Edit: {{ object }}</h1>
+<form method="post">
+  {% include "crud/_form_fields.html" %}
+  <button type="submit" class="green">Save changes</button>
+  <a class="btn grey" href="{% url resource|add:'-list' %}">Cancel</a>
+</form>
+{% endblock %}

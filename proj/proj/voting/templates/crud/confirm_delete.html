@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Delete {{ title }} | Student Voting System{% endblock %}
+{% block content %}
+<h1>Delete {{ title }}</h1>
+<p>Are you sure you want to delete <strong>{{ object }}</strong>? Related records (for example candidates, voters or ballots) will be deleted too.</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="red">Yes, delete</button>
+  <a class="btn grey" href="{% url resource|add:'-list' %}">Cancel</a>
+</form>
+{% endblock %}

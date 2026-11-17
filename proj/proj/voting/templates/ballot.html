@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Ballot | Student Voting System{% endblock %}
+{% block content %}
+<h1>Ballot</h1>
+<p>Choose one candidate for each position, then submit. Only ongoing elections are listed.</p>
+
+<form method="get">
+  <label>Election
+    <select name="election" onchange="this.form.submit()">
+      <option value="">-- Select --</option>
+      {% for e in elections %}<option value="{{ e.pk }}" {% if election and e.pk == election.pk %}selected{% endif %}>{{ e.title }}</option>{% endfor %}
+    </select>
+  </label>
+  <noscript><button class="grey">Load</button></noscript>
+</form>
+
+{% if form %}
+<form method="post" onsubmit="return confirm('Submit your ballot? You cannot change it afterwards.')">
+  {% csrf_token %}
+  <input type="hidden" name="election" value="{{ election.pk }}">
+  {{ form.non_field_errors }}
+  <label>{{ form.voter.label }} {{ form.voter }} {{ form.voter.errors }}</label>
+  {% for field in form %}
+    {% if field.name != 'voter' %}
+      <fieldset><legend>{{ field.label }}</legend>
+        {% for radio in field %}<label>{{ radio.tag }} {{ radio.choice_label }}</label>{% endfor %}
+        {{ field.errors }}
+      </fieldset>
+    {% endif %}
+  {% endfor %}
+  {% if not form.position_fields %}<p>No candidates have been registered for this election yet.</p>{% else %}
+  <button type="submit" class="green">Submit Ballot</button>{% endif %}
+</form>
+{% endif %}
+
+<h2>Submitted Ballots</h2>
+<div class="tablebox">
+  <table>
+    <thead><tr><th>Election</th><th>Position</th><th>Candidate name</th></tr></thead>
+    <tbody>
+    {% for b in ballots %}<tr><td>{{ b.election.title }}</td><td>{{ b.position.title }}</td><td>{{ b.candidate.student.name }}</td></tr>
+    {% empty %}<tr><td colspan="3">No ballots submitted yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

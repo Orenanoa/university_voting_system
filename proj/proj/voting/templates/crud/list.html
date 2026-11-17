@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | Student Voting System{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+<p>Add, edit or remove records below.</p>
+
+<form method="post">
+  {% include "crud/_form_fields.html" %}
+  <button type="submit" class="green">Save</button>
+</form>
+
+<h2>All records</h2>
+<div class="tablebox">
+  <table>
+    <thead><tr>{% for h in headers %}<th>{{ h }}</th>{% endfor %}<th>Actions</th></tr></thead>
+    <tbody>
+    {% for obj, values in rows %}
+      <tr>
+        {% for v in values %}<td>{{ v }}</td>{% endfor %}
+        <td>
+          <a class="btn blue" href="{% url resource|add:'-edit' obj.pk %}">Edit</a>
+          <a class="btn red" href="{% url resource|add:'-delete' obj.pk %}">Delete</a>
+          {% if extra_actions %}
+            <form class="inline" method="post" action="{% url 'election-status' obj.pk 'Ongoing' %}">{% csrf_token %}<button class="green">Start</button></form>
+            <form class="inline" method="post" action="{% url 'election-status' obj.pk 'Ended' %}">{% csrf_token %}<button class="dark">End</button></form>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="{{ headers|length|add:1 }}">Nothing here yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
